@@ -16,7 +16,7 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "ru.vaneck.disappeared.Disappeared"
+          "ru.vaneck.disappeared.DisappearedFabric"
         ]
     },
     "mixins": [

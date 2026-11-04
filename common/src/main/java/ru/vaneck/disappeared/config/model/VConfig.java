@@ -1,6 +1,6 @@
 package ru.vaneck.disappeared.config.model;
 
-import ru.vaneck.disappeared.Constants;
+import ru.vaneck.disappeared.DisappearedConstants;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -15,7 +15,7 @@ public abstract class VConfig {
     private final List<VConfigEntry<?>> ENTRIES = new ArrayList<>();
     private String header = null;
 
-    private Path filePath = Constants.MAIN_WORK_DIRECTORY.resolve("configuration.properties");
+    private Path filePath = DisappearedConstants.MAIN_WORK_DIRECTORY.resolve("configuration.properties");
 
     private <T extends Comparable<T>> VConfigEntry<T> createEntry(String key, T value) {
         VConfigEntry<T> configEntry = new VConfigEntry<>(key, value);
@@ -64,7 +64,7 @@ public abstract class VConfig {
                 Files.createDirectories(filePath.getParent());
                 Files.createFile(filePath);
             } catch (IOException e) {
-                Constants.LOG.error("Failed to create Disappeared config: {}", e.getLocalizedMessage(), e);
+                DisappearedConstants.LOG.error("Failed to create Disappeared config: {}", e.getLocalizedMessage(), e);
                 return;
             }
         try (BufferedWriter writer = Files.newBufferedWriter(
@@ -90,7 +90,7 @@ public abstract class VConfig {
                 writer.newLine();
             }
         } catch (IOException e) {
-            Constants.LOG.error("Failed to write Disappeared config: {}", e.getLocalizedMessage(), e);
+            DisappearedConstants.LOG.error("Failed to write Disappeared config: {}", e.getLocalizedMessage(), e);
         }
     }
 
@@ -117,7 +117,7 @@ public abstract class VConfig {
                 }
             }
         } catch (IOException e) {
-            Constants.LOG.error("Failed to read Disappeared config: {}", e.getLocalizedMessage(), e);
+            DisappearedConstants.LOG.error("Failed to read Disappeared config: {}", e.getLocalizedMessage(), e);
         }
     }
 }

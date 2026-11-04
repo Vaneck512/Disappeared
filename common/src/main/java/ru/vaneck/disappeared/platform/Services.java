@@ -1,6 +1,6 @@
 package ru.vaneck.disappeared.platform;
 
-import ru.vaneck.disappeared.Constants;
+import ru.vaneck.disappeared.DisappearedConstants;
 import ru.vaneck.disappeared.platform.services.IPlatformHelper;
 
 import java.util.ServiceLoader;
@@ -24,7 +24,7 @@ public class Services {
         final T loadedService = ServiceLoader.load(clazz, Services.class.getClassLoader())
                 .findFirst()
                 .orElseThrow(() -> new NullPointerException("Failed to load service for " + clazz.getName()));
-        Constants.LOG.debug("Loaded {} for service {}", loadedService, clazz);
+        DisappearedConstants.LOG.debug("Loaded {} for service {}", loadedService, clazz);
         return loadedService;
     }
 }
