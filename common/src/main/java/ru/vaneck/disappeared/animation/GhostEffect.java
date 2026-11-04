@@ -70,7 +70,7 @@ public class GhostEffect {
             ighostRenderState.disappeared$setGhost(ghostUnit);
 
         if (ghostUnit.reverse)
-            ghostRenderState.y = ghostUnit.entity.getY();
+            ghostRenderState.y = ghostUnit.entity.getPosition(partialTicks).y;
 
         double renderX = ghostRenderState.x - camera.pos.x;
         double renderY = ghostRenderState.y - camera.pos.y;

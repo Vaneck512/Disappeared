@@ -1,6 +1,7 @@
 package ru.vaneck.disappeared;
 
 import com.mojang.brigadier.arguments.LongArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
@@ -29,6 +30,22 @@ public class DisappearedFabric implements ModInitializer {
                                 GhostEffect.clearAll();
                                 return 1;
                             })
+            );
+            dispatcher.register(
+                    ClientCommands.literal("disappearedReversed").then(
+                            ClientCommands.argument("lifeTime", LongArgumentType.longArg())
+                                    .then(ClientCommands.argument("musicMob", StringArgumentType.word())
+                                    .suggests((context, builder) -> {
+                                        builder.suggest("true");
+                                        builder.suggest("false");
+                                        return builder.buildFuture();
+                                    }).executes(context -> {
+                                                        GhostEffect.submitReversedGhost(Minecraft.getInstance().player, LongArgumentType.getLong(context, "lifeTime"), Boolean.parseBoolean(StringArgumentType.getString(context, "musicMob")));
+                                                        return 1;
+                                                    })
+                                    )
+
+                    )
             );
         });
     }
