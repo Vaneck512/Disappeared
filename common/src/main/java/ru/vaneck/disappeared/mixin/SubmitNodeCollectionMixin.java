@@ -2,6 +2,7 @@ package ru.vaneck.disappeared.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.Model;
+import net.minecraft.client.model.object.equipment.ElytraModel;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollection;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
@@ -32,7 +33,9 @@ public abstract class SubmitNodeCollectionMixin {
     )
     private <S> RenderType disappeared$modifyRenderTypeArg(RenderType renderType, Model<? super S> model, S state) {
         if (state instanceof IGhostRenderState ghostRenderState && ghostRenderState.disappeared$isGhost()) {
-            return GhostEffect.castToTranslucent(renderType);
+            if (model instanceof ElytraModel)
+                return GhostEffect.castToTranslucent(renderType, false);
+            return GhostEffect.castToTranslucent(renderType, true);
         }
         return renderType;
     }

@@ -115,7 +115,9 @@ public class GhostEffect {
             GHOSTS_TO_RENDER.add(new Ghost<>(entity, lifetimeMs, false, false));
     }
 
-    public static RenderType castToTranslucent(RenderType prevType) {
+
+
+    public static RenderType castToTranslucent(RenderType prevType, boolean cull) {
         Pattern LOCATION_PATTERN = Pattern.compile("location=([^,\\s\\]]+)");
         Matcher matcher = LOCATION_PATTERN.matcher(prevType.toString());
         Identifier texture;
@@ -124,6 +126,6 @@ public class GhostEffect {
         } else {
             return prevType;
         }
-        return RenderTypes.entityTranslucentCull(texture);
+        return cull ? RenderTypes.entityTranslucentCull(texture) : RenderTypes.entityTranslucent(texture);
     }
 }
