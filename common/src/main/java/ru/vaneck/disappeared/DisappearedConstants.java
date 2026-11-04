@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import ru.vaneck.disappeared.platform.Services;
 
 import java.nio.file.Path;
+import java.util.function.Supplier;
 
 public class DisappearedConstants {
 
@@ -12,5 +13,5 @@ public class DisappearedConstants {
     public static final String MOD_NAME = "Disappeared";
     public static final Logger LOG = LoggerFactory.getLogger(MOD_NAME);
     // .minecraft/config/disappeared/
-    public static final Path MAIN_WORK_DIRECTORY = Services.PLATFORM.getGameDirectory().resolve("config").resolve(MOD_ID);
+    public static final Supplier<Path> MAIN_WORK_DIRECTORY = () -> Services.PLATFORM.getGameDirectory().resolve("config").resolve(MOD_ID);
 }

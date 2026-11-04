@@ -15,7 +15,7 @@ public abstract class VConfig {
     private final List<VConfigEntry<?>> ENTRIES = new ArrayList<>();
     private String header = null;
 
-    private Path filePath = DisappearedConstants.MAIN_WORK_DIRECTORY.resolve("configuration.properties");
+    private Path filePath = DisappearedConstants.MAIN_WORK_DIRECTORY.get().resolve("configuration.properties");
 
     private <T extends Comparable<T>> VConfigEntry<T> createEntry(String key, T value) {
         VConfigEntry<T> configEntry = new VConfigEntry<>(key, value);
