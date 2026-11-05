@@ -3,6 +3,16 @@ plugins {
     id 'net.neoforged.moddev'
 }
 
+repositories {
+    flatDir {
+        dir 'libs'
+    }
+}
+
+dependencies {
+    implementation(files("libs/sap-neoforge-26.3-1.0.7.jar"))
+}
+
 neoForge {
     version = neoforge_version
     // Automatically enable neoforge AccessTransformers if the file exists

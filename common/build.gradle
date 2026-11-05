@@ -12,6 +12,20 @@ neoForge {
     }
 }
 
+repositories {
+    flatDir {
+        dir 'libs'
+    }
+}
+
+//sourceSets {
+//    main {
+//        java {
+//            srcDir("lib")
+//        }
+//    }
+//}
+
 dependencies {
     // Fabric and NeoForge both bundle Fabric Mixin, so it is safe to use it in common
     // If you need to update, check what version they are using to see what is compatible
@@ -21,6 +35,8 @@ dependencies {
     // Fabric and NeoForge both bundle MixinExtras, so it is safe to use it in common
     compileOnly(annotationProcessor('io.github.llamalad7:mixinextras-common:0.5.3'))
 
+    implementation(files("libs/sap-fabric-26.3-1.0.7.jar"))
+//    implementation(fileTree(dir: 'lib', includes: ['*.jar']))
 }
 
 configurations {
@@ -35,8 +51,8 @@ configurations {
 }
 
 artifacts {
-    commonJava sourceSets.main.java.sourceDirectories.singleFile
-    commonResources sourceSets.main.resources.sourceDirectories.singleFile
+    commonJava sourceSets.main.java.sourceDirectories.files
+    commonResources sourceSets.main.resources.sourceDirectories.files
 }
 
 // Implement mcgradleconventions loader attribute

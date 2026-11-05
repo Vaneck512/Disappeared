@@ -10,7 +10,8 @@
     "LevelRendererMixin",
     "MixinGui",
     "PoseStackMixin",
-    "SubmitNodeCollectionMixin"
+    "SubmitNodeCollectionMixin",
+    "MixinMinecraft"
   ],
   "server": [],
   "injectors": {
