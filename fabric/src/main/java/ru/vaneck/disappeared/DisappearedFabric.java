@@ -5,6 +5,10 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLevelEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.Minecraft;
 import ru.vaneck.disappeared.animation.GhostEffect;
 
@@ -13,6 +17,27 @@ public class DisappearedFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         DisappearedCommon.init();
+
+//        ClientCommandRegistrationCallback.EVENT.register((dispatcher, context) -> {
+//            DisappearedClientCommands.register(dispatcher);
+//        });
+
+//        ClientTickEvents.END_CLIENT_TICK.register(_ -> DisappearedKeys.handleKeys());
+
+//        DisappearedKeys.KEY_MAPPINGS.forEach(KeyMappingHelper::registerKeyMapping);
+
+        ClientEntityEvents.ENTITY_UNLOAD.register((entity, _) -> {
+            DisappearedCommon.disappear(entity);
+        });
+
+        ClientEntityEvents.ENTITY_LOAD.register(((entity, level) -> {
+            DisappearedCommon.appear(entity);
+        }));
+
+        ClientLevelEvents.AFTER_CLIENT_LEVEL_CHANGE.register((client, level) -> {
+            GhostEffect.clearAll();
+            DisappearedCommon.updateDistances(null);
+        });
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) -> {
             dispatcher.register(

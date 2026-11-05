@@ -6,12 +6,20 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.world.entity.Entity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.lifecycle.ClientStoppingEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import ru.vaneck.disappeared.animation.GhostEffect;
 
 @Mod(DisappearedConstants.MOD_ID)
@@ -23,6 +31,57 @@ public class DisappearedNeoforge {
         DisappearedCommon.init();
 
 
+    }
+
+    @EventBusSubscriber(modid = DisappearedConstants.MOD_ID, value = Dist.CLIENT)
+    public static class ClientEvents {
+
+//        @SubscribeEvent
+//        public static void onAddClientResourceReloadListener(AddClientReloadListenersEvent event) {
+//            event.addListener(Constants.RELOAD_LISTENER, new ResourceReloadListener());
+//        }
+
+//        @SubscribeEvent
+//        public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
+//            DisappearedKeys.KEY_MAPPINGS.forEach(event::register);
+//        }
+
+//        @SubscribeEvent
+//        public static void registerCommands(RegisterClientCommandsEvent event) {
+//            DisappearedClientCommands.register(event.getDispatcher());
+//        }
+
+//        @SubscribeEvent
+//        public static void onClientTick(ClientTickEvent.Post event) {
+//            DisappearedKeys.handleKeys();
+//        }
+
+        @SubscribeEvent
+        public static void onEntityLoad(EntityJoinLevelEvent event) {
+            Entity entity = event.getEntity();
+            if (entity.level().isClientSide() && event.getLevel().isClientSide()) {
+                DisappearedCommon.appear(entity);
+            }
+        }
+
+        @SubscribeEvent
+        public static void onEntityUnload(EntityLeaveLevelEvent event) {
+            Entity entity = event.getEntity();
+            if (entity.level().isClientSide() && event.getLevel().isClientSide()) {
+                DisappearedCommon.disappear(entity);
+            }
+        }
+
+        @SubscribeEvent
+        public static void onClientChangeLevel(ClientPlayerNetworkEvent.LoggingIn event) {
+            DisappearedCommon.updateDistances(null);
+            GhostEffect.clearAll();
+        }
+
+//        @SubscribeEvent
+//        public static void onPlayerLeaveGame(ClientStoppingEvent event) {
+//            Constants.CONFIG.save();
+//        }
     }
 
     @EventBusSubscriber(value = Dist.CLIENT, modid = DisappearedConstants.MOD_ID)
