@@ -148,7 +148,7 @@ public class DisappearedCommon {
         SAP.playPositional(randomSound.path, type, settings -> {
             settings.setMaxDistance(70);
             settings.setReferenceDistance(6);
-            settings.setVolume(randomSound.volume);
+            settings.setVolume(randomSound.volume * configuration.MASTER_VOLUME.getValue());
             settings.setSoundChannel(SoundSource.MASTER);
         });
     }
