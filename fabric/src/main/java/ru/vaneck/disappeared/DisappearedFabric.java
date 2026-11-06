@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.Minecraft;
 import ru.vaneck.disappeared.animation.GhostEffect;
+import ru.vaneck.disappeared.keys.DisappearedKeys;
 
 public class DisappearedFabric implements ModInitializer {
 
@@ -22,9 +23,9 @@ public class DisappearedFabric implements ModInitializer {
 //            DisappearedClientCommands.register(dispatcher);
 //        });
 
-//        ClientTickEvents.END_CLIENT_TICK.register(_ -> DisappearedKeys.handleKeys());
+        ClientTickEvents.END_CLIENT_TICK.register(_ -> DisappearedKeys.handleKeys());
 
-//        DisappearedKeys.KEY_MAPPINGS.forEach(KeyMappingHelper::registerKeyMapping);
+        DisappearedKeys.KEY_MAPPINGS.forEach(KeyMappingHelper::registerKeyMapping);
 
         ClientEntityEvents.ENTITY_UNLOAD.register((entity, _) -> {
             DisappearedCommon.disappear(entity);

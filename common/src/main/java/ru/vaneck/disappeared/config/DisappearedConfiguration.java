@@ -21,7 +21,8 @@ public class DisappearedConfiguration extends VConfig {
 
     public final VConfigEntry<Long> WORK_RADIUS =
             this.addEntry("radius", -1L, -1L, 1000000000L)
-                    .addDescLine("Enable all mod functions");
+                    .addDescLine("the radius within which the mod will function")
+                    .addDescLine("If set to \"false\", it is calculated automatically (recommended, especially for servers)");
 
     public final VConfigEntry<Boolean> ENABLE_MOD =
             this.addEntry("enable_mod", true)

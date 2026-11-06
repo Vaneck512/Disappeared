@@ -21,6 +21,7 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import ru.vaneck.disappeared.animation.GhostEffect;
+import ru.vaneck.disappeared.keys.DisappearedKeys;
 
 @Mod(DisappearedConstants.MOD_ID)
 public class DisappearedNeoforge {
@@ -41,20 +42,20 @@ public class DisappearedNeoforge {
 //            event.addListener(Constants.RELOAD_LISTENER, new ResourceReloadListener());
 //        }
 
-//        @SubscribeEvent
-//        public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
-//            DisappearedKeys.KEY_MAPPINGS.forEach(event::register);
-//        }
+        @SubscribeEvent
+        public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
+            DisappearedKeys.KEY_MAPPINGS.forEach(event::register);
+        }
 
 //        @SubscribeEvent
 //        public static void registerCommands(RegisterClientCommandsEvent event) {
 //            DisappearedClientCommands.register(event.getDispatcher());
 //        }
 
-//        @SubscribeEvent
-//        public static void onClientTick(ClientTickEvent.Post event) {
-//            DisappearedKeys.handleKeys();
-//        }
+        @SubscribeEvent
+        public static void onClientTick(ClientTickEvent.Post event) {
+            DisappearedKeys.handleKeys();
+        }
 
         @SubscribeEvent
         public static void onEntityLoad(EntityJoinLevelEvent event) {

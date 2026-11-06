@@ -6,7 +6,7 @@ import java.util.List;
 public class VConfigEntry<T extends Comparable<T>> {
     private final List<String> description = new ArrayList<>();
     private final String key;
-    private T value;
+    private volatile T value;
     private final T minValue;
     private final T maxValue;
     private final T defaultValue;
