@@ -37,7 +37,7 @@ public class MainGui extends Screen {
     private final Component SETTINGS = Component.translatable("disappeared.gui_components.settings_text");
     private final Component SOUNDS = Component.translatable("disappeared.gui_components.sounds_text");
 
-    public static final DisappearedConfiguration CONFIGURATION = new DisappearedConfiguration();
+    public static final DisappearedConfiguration CONFIGURATION = DisappearedConfiguration.CONFIGURATION;
     
     private final int FONT_COLOR = 0xFF404040;
 

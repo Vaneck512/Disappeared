@@ -4,6 +4,8 @@ import ru.vaneck.disappeared.DisappearedConstants;
 import ru.vaneck.disappeared.config.model.VConfig;
 import ru.vaneck.disappeared.config.model.VConfigEntry;
 
+import java.util.UUID;
+
 public class DisappearedConfiguration extends VConfig {
 
     public static final DisappearedConfiguration CONFIGURATION = new DisappearedConfiguration();
@@ -16,6 +18,8 @@ public class DisappearedConfiguration extends VConfig {
         setHeader("Client configuration for Disappeared mod \\nF3+T to reload in-game");
         setFilePath(DisappearedConstants.MAIN_WORK_DIRECTORY.get().resolve("configuration.properties"));
     }
+
+    public final UUID id = UUID.randomUUID();
 
     public final VConfigEntry<Boolean> TEST = addEntry("test", true).addDescLine("Test configuration entry");
 
