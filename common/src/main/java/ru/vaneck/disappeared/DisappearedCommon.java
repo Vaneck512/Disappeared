@@ -150,6 +150,7 @@ public class DisappearedCommon {
             settings.setReferenceDistance(6);
             settings.setVolume(randomSound.volume * configuration.MASTER_VOLUME.getValue());
             settings.setSoundChannel(SoundSource.MASTER);
+            settings.setPosition(position);
         });
     }
 
