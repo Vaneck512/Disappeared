@@ -17,7 +17,7 @@ import ru.vaneck.disappeared.screen.widgets.SliderCFGWidget;
 
 public class SettingsGui extends Screen {
 
-    public static final DisappearedConfiguration CONFIGURATION = new DisappearedConfiguration();
+    public static final DisappearedConfiguration CONFIGURATION = DisappearedConfiguration.CONFIGURATION;
 
     public SettingsGui() {
         super(Component.empty());
