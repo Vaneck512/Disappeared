@@ -11,6 +11,8 @@ import ru.vaneck.disappeared.animation.GhostEffect;
 import ru.vaneck.disappeared.config.DisappearedConfiguration;
 import ru.vaneck.disappeared.platform.Services;
 import ru.vaneck.disappeared.screen.MainGui;
+import ru.vaneck.disappeared.screen.SoundsGui;
+import ru.vaneck.disappeared.screen.test.CustomDemoScreen;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -82,7 +84,7 @@ public class DisappearedKeys {
         }
 
         if (DISAPPEARED.consumeClick()) {
-            client.gui.setScreen(new MainGui());
+            client.gui.setScreen(new SoundsGui());
         }
         if (TOGGLE_SOUND.consumeClick()) {
            configuration.ENABLE_SOUNDS.setValue(!configuration.ENABLE_SOUNDS.getValue());
