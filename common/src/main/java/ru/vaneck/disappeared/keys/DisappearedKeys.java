@@ -10,9 +10,7 @@ import ru.vaneck.disappeared.DisappearedConstants;
 import ru.vaneck.disappeared.animation.GhostEffect;
 import ru.vaneck.disappeared.config.DisappearedConfiguration;
 import ru.vaneck.disappeared.platform.Services;
-import ru.vaneck.disappeared.screen.MainGui;
 import ru.vaneck.disappeared.screen.SoundsGui;
-import ru.vaneck.disappeared.screen.test.CustomDemoScreen;
 
 import java.awt.*;
 import java.util.ArrayList;

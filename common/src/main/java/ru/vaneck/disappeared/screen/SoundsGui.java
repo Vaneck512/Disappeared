@@ -14,10 +14,10 @@ public class SoundsGui extends Screen {
     @Override
     protected void init() {
         super.init();
-        this.soundListWidget = addRenderableWidget(new SoundListWidget(Minecraft.getInstance(), 195, 120, 50, 25));
+        this.soundListWidget = addRenderableWidget(new SoundListWidget(Minecraft.getInstance(), width/2 - 235/2, 235, 120, 50, 45));
 
         soundListWidget.add();
-        soundListWidget.add();
+//        soundListWidget.add();
 //        soundListWidget.add();
 //        soundListWidget.addEntry(new SoundListWidget.SoundListEntry(0, 0, this));
 //        soundListWidget.addEntry(new SoundListWidget.SoundListEntry(0,0, this));
