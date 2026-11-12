@@ -26,7 +26,7 @@ public class SoundListWidget extends ContainerObjectSelectionList<SoundListWidge
 
     public SoundListWidget(Minecraft minecraft, int x, int width, int height, int y, int itemHeight) {
         super(minecraft, width, height, y, itemHeight);
-        setX(90);
+//        setX(90);
         this.x = x;
     }
 
@@ -38,6 +38,9 @@ public class SoundListWidget extends ContainerObjectSelectionList<SoundListWidge
     public void add() {
         SoundListEntry s = new SoundListEntry(getX(), getWidth(), SoundResourcesCache.ALL_SOUNDS.stream().toList().get(1));
         SoundListEntry s1 = new SoundListEntry(getX(), getWidth(), SoundResourcesCache.ALL_SOUNDS.stream().toList().get(2));
+        addEntry(new SoundListEntry(getX(), getWidth(), SoundResourcesCache.ALL_SOUNDS.stream().toList().get(3)));
+        addEntry(new SoundListEntry(getX(), getWidth(), SoundResourcesCache.ALL_SOUNDS.stream().toList().get(4)));
+        addEntry(new SoundListEntry(getX(), getWidth(), SoundResourcesCache.ALL_SOUNDS.stream().toList().get(5)));
         addEntry(s);
         addEntry(s1);
 //        System.out.println(this.children().size()*defaultEntryHeight);
@@ -45,8 +48,13 @@ public class SoundListWidget extends ContainerObjectSelectionList<SoundListWidge
 
     @Override
     protected void extractListBackground(GuiGraphicsExtractor graphics) {
-        super.extractListBackground(graphics);
+//        super.extractListBackground(graphics);
 //        graphics.fill(getX(), getY(), getWidth(), getHeight(), 0xFFFFFFFF);
+    }
+
+    @Override
+    protected void extractListSeparators(GuiGraphicsExtractor graphics) {
+//        super.extractListSeparators(graphics);
     }
 
     @Override
@@ -145,6 +153,16 @@ public class SoundListWidget extends ContainerObjectSelectionList<SoundListWidge
         }
 
         @Override
+        public int getX() {
+            return super.getX() - 7;
+        }
+
+        @Override
+        public int getY() {
+            return super.getY() - 3;
+        }
+
+        @Override
         public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
             this.volumeSlider.setFocused(false);
             if (this.playButton.mouseClicked(event, doubleClick))
@@ -189,7 +207,9 @@ public class SoundListWidget extends ContainerObjectSelectionList<SoundListWidge
         public boolean keyPressed(@NonNull KeyEvent event) {
             if (this.volumeSlider.isFocused() && this.volumeSlider.keyPressed(event))
                 return true;
-            return false;
+            if (this.activeCheckbox.isFocused() && this.activeCheckbox.keyPressed(event))
+                return true;
+            return this.playButton.isFocused() && this.playButton.keyPressed(event);
         }
 
         public int getLeft() {
@@ -202,12 +222,20 @@ public class SoundListWidget extends ContainerObjectSelectionList<SoundListWidge
 
         @Override
         public @NonNull List<? extends NarratableEntry> narratables() {
-            return List.of();
+            return List.of(
+                    this.activeCheckbox,
+                    this.volumeSlider,
+                    this.playButton
+            );
         }
 
         @Override
         public @NonNull List<? extends GuiEventListener> children() {
-            return List.of();
+            return List.of(
+                    this.activeCheckbox,
+                    this.volumeSlider,
+                    this.playButton
+            );
         }
     }
 }
