@@ -39,7 +39,7 @@ public class DisappearedCommon {
             DisappearedConstants.LOG.info("Playing " + s.fileName);
             SAP.play(s.path, DisappearedConstants.IDENTIFIER_PATTERN.matcher(s.path).find() ? AudioType.LOCATION : AudioType.FILE, 0.25f);
             DisappearedConstants.LOG.info(SoundResourcesCache.ALL_SOUNDS.toString());
-            DisappearedConstants.LOG.info(SoundResourcesCache.ALL_SOUNDS.stream().toList().get(0).toString());
+            DisappearedConstants.LOG.info(SoundResourcesCache.ALL_SOUNDS.stream().toList().getFirst().toString());
         });
     }
 
@@ -143,6 +143,7 @@ public class DisappearedCommon {
 
     private static void playRandomSound(Vec3 position) {
         List<SoundInstanceRecord> activeSounds = SoundResourcesCache.getActiveSounds();
+        if (activeSounds.isEmpty()) return;
         SoundInstanceRecord randomSound = activeSounds.get(ThreadLocalRandom.current().nextInt(activeSounds.size()));
         AudioType type = DisappearedConstants.IDENTIFIER_PATTERN.matcher(randomSound.path).find() ? AudioType.LOCATION : AudioType.FILE;
         SAP.playPositional(randomSound.path, type, settings -> {

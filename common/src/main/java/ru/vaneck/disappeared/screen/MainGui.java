@@ -11,7 +11,6 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Util;
 import org.jspecify.annotations.NonNull;
 import ru.vaneck.disappeared.DisappearedConstants;
 import ru.vaneck.disappeared.config.DisappearedConfiguration;
@@ -39,7 +38,7 @@ public class MainGui extends Screen {
 
     public static final DisappearedConfiguration CONFIGURATION = DisappearedConfiguration.CONFIGURATION;
     
-    private final int FONT_COLOR = 0xFF404040;
+    private final int FONT_COLOR = 0xFF424242;
 
     public MainGui() {
         super(Component.literal("Disappeared"));
@@ -51,13 +50,13 @@ public class MainGui extends Screen {
         guiX = width/2-(texWidth/2);
         guiY = height/2-(texHeight/2);
 
-        addRenderableWidget(Button.builder(SETTINGS, button -> Minecraft.getInstance().gui.setScreen(new SettingsGui()))
+        addRenderableWidget(Button.builder(SETTINGS, _ -> Minecraft.getInstance().gui.setScreen(new SettingsGui()))
                 .width(75)
                 .pos(guiX+10, guiY+30)
                 .build()
         );
 
-        SpriteIconButton soundsScreenButton = SpriteIconButton.builder(SOUNDS, button -> Minecraft.getInstance().gui.setScreen(new SoundsGui()), false)
+        SpriteIconButton soundsScreenButton = SpriteIconButton.builder(SOUNDS, _ -> Minecraft.getInstance().gui.setScreen(new SoundsGui()), false)
                 .width(79)
                 .sprite(Identifier.withDefaultNamespace("icon/music_notes"), 16, 16)
                 .build();
@@ -72,17 +71,13 @@ public class MainGui extends Screen {
 
         addRenderableWidget(
                 new IconButtonWidget(guiX+164, guiY+57, 20, 20, FOLDER_ICON,
-                     _ -> {
-                        Blaze3D.openPath(DisappearedConstants.MAIN_WORK_DIRECTORY.get());
-                     }
+                     _ -> Blaze3D.openPath(DisappearedConstants.MAIN_WORK_DIRECTORY.get())
                 ).withTooltip(Tooltip.create(Component.translatable("disappeared.gui_components.mod_folder_text")))
         );
 
         addRenderableWidget(
                 new IconButtonWidget(guiX+139, guiY+57, 20, 20, CFG_FILE_ICON,
-                     _ -> {
-                        Blaze3D.openPath(CONFIGURATION.getFilePath());
-                     }
+                     _ -> Blaze3D.openPath(CONFIGURATION.getFilePath())
                 ).withTooltip(Tooltip.create(Component.translatable("disappeared.gui_components.cfg_file_text")))
         );
     }

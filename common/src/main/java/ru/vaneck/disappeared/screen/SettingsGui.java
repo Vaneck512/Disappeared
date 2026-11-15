@@ -41,7 +41,7 @@ public class SettingsGui extends Screen {
     private final int FONT_COLOR = 0xFF404040;
 
     private final int texWidth = 195;
-    private final int texHeight = 128; //94
+    private final int texHeight = 128;
 
     private final Identifier TEXTURE = Identifier.fromNamespaceAndPath(DisappearedConstants.MOD_ID, "textures/gui/settings_screen.png");
 
@@ -65,8 +65,6 @@ public class SettingsGui extends Screen {
         addRenderableWidget(new EditBoxCFGWidget(Minecraft.getInstance().font, x+115, y+65, 64, 20, CONFIGURATION.APPEAR_ANIMATION_DURATION));
 
         addRenderableWidget(new ButtonCFGWidget(x+115, y+94, 64, 20, PLAYERS, MOBS, CONFIGURATION.ONLY_PLAYERS));
-
-//        addRenderableWidget(Button.builder(Component.literal(""), button -> minecraft.setScreenAndShow(new MainGui())).build());
 
         if (showDoneButton) {
             addRenderableWidget(Button.builder(Component.translatable("gui.done"), _ -> onClose())

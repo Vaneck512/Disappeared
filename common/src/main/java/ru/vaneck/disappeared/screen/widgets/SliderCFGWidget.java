@@ -2,7 +2,6 @@ package ru.vaneck.disappeared.screen.widgets;
 
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -86,10 +85,5 @@ public class SliderCFGWidget extends AbstractSliderButton {
     @Nullable
     public SoundInstanceRecord getSound() {
         return this.disappearSound;
-    }
-
-    @Override
-    public void playDownSound(SoundManager soundManager) {
-        super.playDownSound(soundManager);
     }
 }

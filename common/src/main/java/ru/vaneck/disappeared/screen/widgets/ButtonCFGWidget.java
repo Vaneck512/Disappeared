@@ -5,6 +5,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import ru.vaneck.disappeared.config.model.VConfigEntry;
 
 public class ButtonCFGWidget extends Button {
@@ -20,7 +21,7 @@ public class ButtonCFGWidget extends Button {
     }
 
     @Override
-    public void onPress(InputWithModifiers input) {
+    public void onPress(@NonNull InputWithModifiers input) {
         super.onPress(input);
         vConfigEntry.setValue(!vConfigEntry.getValue());
         update();
