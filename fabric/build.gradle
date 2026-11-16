@@ -32,9 +32,8 @@ dependencies {
     implementation("net.fabricmc:fabric-loader:${fabric_loader_version}")
     implementation("net.fabricmc.fabric-api:fabric-api:${fabric_version}")
 
-//    implementation(files("libs/sap-fabric-26.3-1.0.8.jar"))
-    implementation "local.libs:sap-fabric-26.3:1.0.8"
-    include "local.libs:sap-fabric-26.3:1.0.8"
+    implementation "local.libs:sap-fabric-26.2:1.0.8"
+    include "local.libs:sap-fabric-26.2:1.0.8"
     implementation("com.terraformersmc:modmenu:${project.modmenu_version}")
     api("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
         exclude(group: "net.fabricmc.fabric-api")
