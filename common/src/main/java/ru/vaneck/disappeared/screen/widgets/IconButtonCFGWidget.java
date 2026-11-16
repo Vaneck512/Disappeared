@@ -17,7 +17,7 @@ public class IconButtonCFGWidget extends Button {
     private final VConfigEntry<Boolean> vConfigEntry;
     private final Identifier icon;
     private final Identifier DISABLED_OVERLAY = Identifier.fromNamespaceAndPath(DisappearedConstants.MOD_ID, "textures/gui/icon/disabled_overlay.png");
-    public static final DisappearedConfiguration CONFIGURATION = new DisappearedConfiguration();
+    public static final DisappearedConfiguration CONFIGURATION = DisappearedConfiguration.CONFIGURATION;
     private Component defaultTooltipMessage;
 
     public IconButtonCFGWidget(int x, int y, int width, int height, Identifier icon, VConfigEntry<Boolean> configEntry) {
