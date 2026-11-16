@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
-import net.minecraft.client.resources.model.geometry.ItemQuads;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -68,12 +67,12 @@ public abstract class SubmitNodeCollectionMixin {
     @ModifyVariable(
             method = "submitItem",
             at = @At("HEAD"),
-            argsOnly = true,
-            ordinal = 0)
-    private ItemQuads disappeared$modifyQuadsForTransparency(
-            ItemQuads originalQuads,
-            PoseStack poseStack,
-            ItemDisplayContext displayContext
+            ordinal = 0,
+            argsOnly = true
+    )
+    private List<BakedQuad> modifyQuadsForTransparency(List<BakedQuad> originalQuads,
+                                                       PoseStack poseStack,
+                                                       ItemDisplayContext displayContext
     ) {
         if ((displayContext == ItemDisplayContext.THIRD_PERSON_LEFT_HAND || displayContext == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
                 && poseStack instanceof IGhostRenderState ghostState && ghostState.disappeared$isGhost()) {
@@ -82,56 +81,50 @@ public abstract class SubmitNodeCollectionMixin {
                 return originalQuads;
             }
 
-            return new ItemQuads(disappeared$applyTranslucent(originalQuads.all()), disappeared$applyTranslucent(originalQuads.solid()), disappeared$applyTranslucent(originalQuads.translucent()));
+            List<BakedQuad> modifiedQuads = new ArrayList<>(originalQuads.size());
+
+            for (BakedQuad quad : originalQuads) {
+                BakedQuad.MaterialInfo oldInfo = quad.materialInfo();
+
+                boolean isBlockAtlas = oldInfo.sprite().atlasLocation().toString().contains("blocks");
+                var newRenderType = isBlockAtlas ? Sheets.translucentBlockItemSheet() : Sheets.translucentItemSheet();
+
+                int forcedTintIndex = oldInfo.tintIndex();
+                if (forcedTintIndex == -1) {
+                    forcedTintIndex = 99;
+                }
+
+                BakedQuad.MaterialInfo newInfo = new BakedQuad.MaterialInfo(
+                        oldInfo.sprite(),
+                        ChunkSectionLayer.TRANSLUCENT,
+                        newRenderType,
+                        forcedTintIndex,
+                        oldInfo.shade(),
+                        oldInfo.lightEmission()
+                );
+
+                BakedQuad newQuad = new BakedQuad(
+                        quad.position0(), quad.position1(), quad.position2(), quad.position3(),
+                        quad.packedUV0(), quad.packedUV1(), quad.packedUV2(), quad.packedUV3(),
+                        quad.direction(),
+                        newInfo
+                );
+
+                modifiedQuads.add(newQuad);
+            }
+
+            return modifiedQuads;
         }
 
         return originalQuads;
     }
 
-    private List<BakedQuad> disappeared$applyTranslucent(List<BakedQuad> originalQuads) {
-        List<BakedQuad> modifiedQuads = new ArrayList<>(originalQuads.size());
-
-        for (BakedQuad quad : originalQuads) {
-            BakedQuad.MaterialInfo oldInfo = quad.materialInfo();
-
-            boolean isBlockAtlas = oldInfo.sprite().atlasLocation().toString().contains("blocks");
-            var newRenderType = isBlockAtlas ? Sheets.translucentBlockItemSheet() : Sheets.translucentItemSheet();
-
-            int forcedTintIndex = oldInfo.tintIndex();
-            if (forcedTintIndex == -1) {
-                forcedTintIndex = 99;
-            }
-
-            BakedQuad.MaterialInfo newInfo = new BakedQuad.MaterialInfo(
-                    oldInfo.sprite(),
-                    ChunkSectionLayer.TRANSLUCENT,
-                    newRenderType,
-                    oldInfo.itemGlintRenderType(),
-                    oldInfo.itemGlintSpecialRenderType(),
-                    forcedTintIndex,
-                    oldInfo.shadeDirectionOverride(),
-                    oldInfo.lightEmission()
-            );
-
-            BakedQuad newQuad = new BakedQuad(
-                    quad.position0(), quad.position1(), quad.position2(), quad.position3(),
-                    quad.packedUV0(), quad.packedUV1(), quad.packedUV2(), quad.packedUV3(),
-                    quad.direction(),
-                    newInfo
-            );
-
-            modifiedQuads.add(newQuad);
-        }
-
-        return modifiedQuads;
-    }
-
     @ModifyVariable(
-            method = "submitItem",
+            method = "submitItem(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/item/ItemDisplayContext;III[ILjava/util/List;Lnet/minecraft/client/renderer/item/ItemStackRenderState$FoilType;)V",
             at = @At("HEAD"),
             argsOnly = true
     )
-    private int[] disappeared$modifyItemTintLayers(int[] tintLayers, PoseStack poseStack) {
+    private int[] modifyItemTintLayers(int[] tintLayers, PoseStack poseStack) {
 
         if (poseStack instanceof IGhostRenderState ghostState && ghostState.disappeared$isGhost()) {
             float alpha = ghostState.disappeared$getGhostAlpha();
@@ -166,9 +159,8 @@ public abstract class SubmitNodeCollectionMixin {
     @ModifyVariable(
             method = "submitShadow",
             at = @At("HEAD"),
-            argsOnly = true
-    )
-    private List<EntityRenderState.ShadowPiece> disappeared$modifyShadowPieces(List<EntityRenderState.ShadowPiece> original, PoseStack poseStack) {
+            argsOnly = true)
+    private List<EntityRenderState.ShadowPiece> modifyShadowPieces(List<EntityRenderState.ShadowPiece> original, PoseStack poseStack) {
         if (poseStack instanceof IGhostRenderState ghostRenderState && ghostRenderState.disappeared$isGhost()) {
             Ghost<?,?> ghostUnit = ghostRenderState.disappeared$getGhost();
             List<EntityRenderState.ShadowPiece> modifiedPieces = new ArrayList<>();
