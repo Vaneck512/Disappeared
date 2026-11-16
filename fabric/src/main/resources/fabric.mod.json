@@ -8,16 +8,28 @@
         "${mod_author}"
     ],
     "contact": {
-        "homepage": "https://fabricmc.net/",
-        "sources": "https://github.com/FabricMC/fabric-example-mod"
+        "homepage": "https://modrinth.com/mod/disappeared",
+        "sources": "https://github.com/Vanek512/Disappeared",
+        "issues": "https://github.com/Vanek512/Disappeared/issues"
     },
     "license": "${license}",
     "icon": "${mod_id}.png",
-    "environment": "*",
+    "environment": "client",
     "entrypoints": {
         "main": [
           "ru.vaneck.disappeared.DisappearedFabric"
+        ],
+        "modmenu": [
+            "ru.vaneck.disappeared.integration.modmenu.ModMenuApiImpl"
         ]
+    },
+    "custom": {
+        "modmenu": {
+            "links": {
+                "Modrinth": "https://modrinth.com/mod/disappeared",
+                "YouTube": "https://www.youtube.com/@vaneck512-mods"
+            }
+        }
     },
     "mixins": [
         "${mod_id}.mixins.json",
@@ -30,7 +42,8 @@
         "java": ">=${java_version}"
     },
     "suggests": {
-        "another-mod": "*"
+        "modmenu": "*",
+        "cloth_config": "*"
     }
 }
   
