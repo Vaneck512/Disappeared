@@ -9,12 +9,11 @@ import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.NonNull;
-import ru.vaneck.disappeared.DisappearedConstants;
 import ru.vaneck.disappeared.files.SoundInstanceRecord;
 import ru.vaneck.disappeared.files.SoundResourcesCache;
-import ru.vaneck.sap.lib.SAP;
-import ru.vaneck.sap.lib.sound.AudioType;
+import ru.vaneck.disappeared.sound.SoundManager;
 
 import java.util.List;
 
@@ -47,7 +46,7 @@ public class SoundListWidget extends ContainerObjectSelectionList<SoundListWidge
 
     @Override
     protected void extractScrollbar(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        graphics.enableScissor(scrollBarX(), scrollBarY()+2, scrollBarX()+scrollbarWidth(), scrollBarY()+getHeight());
+        graphics.enableScissor(scrollBarX(), scrollBarY()+2, scrollBarX()+scrollbarWidth()-1, scrollBarY()+scrollerHeight());
         super.extractScrollbar(graphics, mouseX, mouseY);
         graphics.disableScissor();
     }
@@ -88,18 +87,35 @@ public class SoundListWidget extends ContainerObjectSelectionList<SoundListWidge
                     .build();
 
             this.playButton = new IconButtonWidget(0, 0, 17, 17,
-                    Identifier.parse("disappeared:textures/gui/icon/play_icon.png"), _ -> SAP.play(
-                            soundInstanceRecord.path,
-                            DisappearedConstants.IDENTIFIER_PATTERN.matcher(soundInstanceRecord.path).find() ? AudioType.LOCATION : AudioType.FILE,
-                            soundInstanceRecord.volume
-                    )) {
+                    Identifier.parse("disappeared:textures/gui/icon/play_icon.png"), _ -> {
+                        SoundManager.stopAll();
+
+                        SoundManager.playSound(
+                                soundInstanceRecord.path, instance -> {
+                                    instance.setVolume(soundInstanceRecord.volume);
+                                    instance.setRelative(true);
+                                }
+                        );
+            }) {
                 @Override
                 protected void extractContents(@NonNull GuiGraphicsExtractor guiGraphicsExtractor, int i, int i1, float v) {
                     this.extractDefaultSprite(guiGraphicsExtractor);
                     this.extractDefaultLabel(guiGraphicsExtractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE));
-                    int iconX = getX() + width / 2 - 6;
-                    int iconY = getY() + height / 2 - 6;
-                    guiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, ICON, iconX, iconY, 0, 0, 13, 13, 13, 13);
+                    int iconX = getX() + width / 2 - 8;
+                    int iconY = getY() + height / 2 - 9;
+
+                    Matrix3x2fStack poseStack = guiGraphicsExtractor.pose();
+                    poseStack.pushMatrix();
+
+                    poseStack.translate(iconX, iconY);
+
+                    float scale = 17.0F / 24.0F;
+                    poseStack.scale(scale, scale);
+
+                    guiGraphicsExtractor.blit(RenderPipelines.GUI_TEXTURED, ICON, 0, 0, 0, 0, 24, 24, 24, 24);
+
+                    poseStack.popMatrix();
+
                 }
             };
 
@@ -113,9 +129,9 @@ public class SoundListWidget extends ContainerObjectSelectionList<SoundListWidge
             int right = left + getWidth();
             int bottom = top + getHeight();
 
-            int color1 = 0xFF858282;
-            int color2 = 0xFF999999;
-            int color3 = 0xFFFFFFFF;
+            int color1 = 0x15FFFFFF;//0xFF858282;
+            int color2 = 0x25FFFFFF;//0xFF999999;
+            int color3 = 0x40FFFFFF;//0xFFFFFFFF;
 
             int color = isMouseOver(mouseX, mouseY) ? color3 :  (id % 2 == 0 ? color1 : color2);
             guiGraphicsExtractor.fill(left, top, right, bottom, color);
@@ -129,7 +145,23 @@ public class SoundListWidget extends ContainerObjectSelectionList<SoundListWidge
             volumeSlider.setPosition(left + 5, bottom - 25);
             volumeSlider.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, partialTick);
 
-            guiGraphicsExtractor.text(Minecraft.getInstance().font, soundInstanceRecord.fileName, left + 5, top + 5, isMouseOver(mouseX, mouseY) ? 0xFF424242 : 0xFFFFFFFF, false);
+            String rawName = soundInstanceRecord.fileName;
+            int maxLength = 35;
+            String fileName;
+
+            if (rawName.length() > maxLength) {
+                String dots = "...";
+                int charsToKeep = (maxLength - dots.length()) / 2;
+                int endChars = maxLength - dots.length() - charsToKeep;
+
+                fileName = rawName.substring(0, charsToKeep)
+                        + dots
+                        + rawName.substring(rawName.length() - endChars);
+            } else {
+                fileName = rawName;
+            }
+
+            guiGraphicsExtractor.text(Minecraft.getInstance().font, fileName, left + 5, top + 5, 0xFFFFFFFF, !isMouseOver(mouseX, mouseY));
         }
 
         @Override
