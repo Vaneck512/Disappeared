@@ -7,10 +7,14 @@ repositories {
     flatDir {
         dir 'libs'
     }
+    maven { url "https://maven.shedaniel.me/" }
 }
 
 dependencies {
-    implementation(files("libs/sap-neoforge-26.3-1.0.7.jar"))
+//    implementation(files("libs/sap-neoforge-26.3-1.0.8.jar"))
+    implementation "local.libs:sap-neoforge-26.3:1.0.8"
+    jarJar("local.libs:sap-neoforge-26.3:1.0.8")
+    api("me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_config_version}")
 }
 
 neoForge {
