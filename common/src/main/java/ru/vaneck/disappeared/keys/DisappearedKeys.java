@@ -10,7 +10,7 @@ import ru.vaneck.disappeared.DisappearedConstants;
 import ru.vaneck.disappeared.animation.GhostEffect;
 import ru.vaneck.disappeared.config.DisappearedConfiguration;
 import ru.vaneck.disappeared.platform.Services;
-import ru.vaneck.disappeared.screen.SoundsGui;
+import ru.vaneck.disappeared.screen.MainGui;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -82,7 +82,7 @@ public class DisappearedKeys {
         }
 
         if (DISAPPEARED.consumeClick()) {
-            client.gui.setScreen(new SoundsGui());
+            client.gui.setScreen(new MainGui());
         }
         if (TOGGLE_SOUND.consumeClick()) {
            configuration.ENABLE_SOUNDS.setValue(!configuration.ENABLE_SOUNDS.getValue());
