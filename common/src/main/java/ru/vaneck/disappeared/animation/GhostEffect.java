@@ -126,6 +126,6 @@ public class GhostEffect {
         } else {
             return prevType;
         }
-        return cull ? RenderTypes.entityTranslucentCull(texture) : RenderTypes.entityTranslucent(texture);
+        return cull ? RenderTypes.entityTranslucentCullItemTarget(texture) : RenderTypes.entityTranslucent(texture);
     }
 }
