@@ -6,6 +6,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import ru.vaneck.disappeared.animation.GhostEffect;
@@ -14,6 +15,7 @@ import ru.vaneck.disappeared.files.SoundInstanceRecord;
 import ru.vaneck.disappeared.files.SoundResourcesCache;
 import ru.vaneck.disappeared.files.Utils;
 import ru.vaneck.disappeared.platform.Services;
+import ru.vaneck.disappeared.sound.SoundManager;
 import ru.vaneck.sap.lib.SAP;
 import ru.vaneck.sap.lib.sound.AudioType;
 
@@ -34,13 +36,15 @@ public class DisappearedCommon {
         }
         SoundResourcesCache.init();
 
-        Utils.runOnResourceManagerLoaded(() -> {
-            SoundInstanceRecord s = SoundResourcesCache.getActiveSounds().get(ThreadLocalRandom.current().nextInt(SoundResourcesCache.getActiveSounds().size()));
-            DisappearedConstants.LOG.info("Playing " + s.fileName);
-            SAP.play(s.path, DisappearedConstants.IDENTIFIER_PATTERN.matcher(s.path).find() ? AudioType.LOCATION : AudioType.FILE, 0.25f);
-            DisappearedConstants.LOG.info(SoundResourcesCache.ALL_SOUNDS.toString());
-            DisappearedConstants.LOG.info(SoundResourcesCache.ALL_SOUNDS.stream().toList().getFirst().toString());
-        });
+        if (Services.PLATFORM.isDevelopmentEnvironment()) {
+            Utils.runOnResourceManagerLoaded(() -> {
+                SoundInstanceRecord s = SoundResourcesCache.getActiveSounds().get(ThreadLocalRandom.current().nextInt(SoundResourcesCache.getActiveSounds().size()));
+                DisappearedConstants.LOG.info("Playing " + s.fileName);
+                SAP.play(s.path, DisappearedConstants.IDENTIFIER_PATTERN.matcher(s.path).find() ? AudioType.LOCATION : AudioType.FILE, 0.25f);
+                DisappearedConstants.LOG.info(SoundResourcesCache.ALL_SOUNDS.toString());
+                DisappearedConstants.LOG.info(SoundResourcesCache.ALL_SOUNDS.stream().toList().getFirst().toString());
+            });
+        }
     }
 
     public static final List<Double> DISTANCES = new ArrayList<>();
@@ -50,7 +54,7 @@ public class DisappearedCommon {
             DISTANCES.clear();
             return;
         }
-        int maxSize = 15;
+        int maxSize = 25;
         Player clientPlayer = Minecraft.getInstance().player;
         if (clientPlayer == null) return;
         double distance = (double) Math.round(clientPlayer.position().distanceTo(entity.position()));
@@ -65,15 +69,14 @@ public class DisappearedCommon {
     }
 
     public static double getWorkRadius() {
-        if (configuration.WORK_RADIUS.getValue() != -1)
-            return configuration.WORK_RADIUS.getValue();
         return DISTANCES.stream()
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
                 .entrySet().stream()
                 .max(Map.Entry.comparingByValue())
                 .map(Map.Entry::getKey)
-                .orElse(60D) - 5;
+                .orElse(60D) - 0.5;
     }
+
 
     public static void appear(Entity justEntity) {
         if (!configuration.ENABLE_MOD.getValue()) return;
@@ -98,24 +101,20 @@ public class DisappearedCommon {
         boolean isMusicMob = false;
         long lifeTime = configuration.APPEAR_ANIMATION_DURATION.getValue();
 
-//        if (configuration.ENABLE_SOUNDS.getValue() && configuration.PLAY_APPEARANCE_SOUNDS.getValue()) {
-//            lifeTime = (long) AudioPlayerController.playRandomSound(l, true);
-//            isMusicMob = lifeTime > 20;
-//            if (!isMusicMob) lifeTime = configuration.APPEAR_ANIMATION_DURATION.getValue();
-//            else lifeTime*=1000;
-//        }
-
         if (configuration.SHOW_GHOSTS.getValue())
             GhostEffect.submitReversedGhost(l, lifeTime, isMusicMob);
     }
 
     public static void disappear(Entity justEntity) {
         if (!configuration.ENABLE_MOD.getValue()) return;
-
+        updateDistances(justEntity);
         if (!configuration.ONLY_PLAYERS.getValue() && !(justEntity instanceof Mob) && !(justEntity instanceof Player))
             return;
 
         if (!(justEntity instanceof LivingEntity l) || l instanceof ArmorStand) return;
+
+        if (justEntity instanceof Creeper && !justEntity.isAlive()) return; // Disable for creepers (animation and sound was played after the explosion)
+
         Vec3 entityPos = l.position();
         Player clientPlayer = Minecraft.getInstance().player;
         if (
@@ -145,14 +144,13 @@ public class DisappearedCommon {
         List<SoundInstanceRecord> activeSounds = SoundResourcesCache.getActiveSounds();
         if (activeSounds.isEmpty()) return;
         SoundInstanceRecord randomSound = activeSounds.get(ThreadLocalRandom.current().nextInt(activeSounds.size()));
-        AudioType type = DisappearedConstants.IDENTIFIER_PATTERN.matcher(randomSound.path).find() ? AudioType.LOCATION : AudioType.FILE;
-        SAP.playPositional(randomSound.path, type, settings -> {
+        SoundManager.playSound(randomSound.path, settings -> {
             settings.setMaxDistance(70);
-            settings.setReferenceDistance(6);
-            settings.setVolume(randomSound.volume * configuration.MASTER_VOLUME.getValue());
+            settings.setReferenceDistance(25);
+            settings.setVolume(randomSound.volume * configuration.MASTER_VOLUME.getValue()/100);
             settings.setSoundChannel(SoundSource.MASTER);
             settings.setPosition(position);
-        });
+        }, true);
     }
 
 }
