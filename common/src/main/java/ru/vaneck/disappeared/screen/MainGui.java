@@ -11,6 +11,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import org.jspecify.annotations.NonNull;
 import ru.vaneck.disappeared.DisappearedConstants;
 import ru.vaneck.disappeared.config.DisappearedConfiguration;
@@ -71,13 +72,13 @@ public class MainGui extends Screen {
 
         addRenderableWidget(
                 new IconButtonWidget(guiX+164, guiY+57, 20, 20, FOLDER_ICON,
-                     _ -> Blaze3D.openPath(DisappearedConstants.MAIN_WORK_DIRECTORY.get())
+                     _ -> Util.getPlatform().openPath(DisappearedConstants.MAIN_WORK_DIRECTORY.get())
                 ).withTooltip(Tooltip.create(Component.translatable("disappeared.gui_components.mod_folder_text")))
         );
 
         addRenderableWidget(
                 new IconButtonWidget(guiX+139, guiY+57, 20, 20, CFG_FILE_ICON,
-                     _ -> Blaze3D.openPath(CONFIGURATION.getFilePath())
+                     _ -> Util.getPlatform().openFile(CONFIGURATION.getFilePath().toFile())
                 ).withTooltip(Tooltip.create(Component.translatable("disappeared.gui_components.cfg_file_text")))
         );
     }
