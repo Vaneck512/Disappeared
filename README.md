@@ -1,32 +1,29 @@
-# MultiLoader Template
+<p align="center">
+  <img src="https://cdn.modrinth.com/data/cached_images/1ff2c82986eec5ab98af91d3443aa084e118d087_0.webp" alt="logo">
+</p>
 
-This project provides a Gradle project template that can compile Minecraft mods for multiple modloaders using a common project for the sources. This project does not require any third party libraries or dependencies. If you have any questions or want to discuss the project, please join our [Discord](https://discord.myceliummod.network).
 
-## Getting Started
+**a _CLIENT_ side mod that turns the boring disappearance of players into a smooth vanishing with a random sound.**
 
-### IntelliJ IDEA
-This guide will show how to import the MultiLoader Template into IntelliJ IDEA. The setup process is roughly equivalent to setting up the modloaders independently and should be very familiar to anyone who has worked with their MDKs.
 
-1. Clone or download this repository to your computer.
-2. Configure the project by setting the properties in the `gradle.properties` file. You will also need to change the `rootProject.name`  property in `settings.gradle`, this should match the folder name of your project, or else IDEA may complain.
-3. Open the template's root folder as a new project in IDEA. This is the folder that contains this README.md file and the gradlew executable.
-4. If your default JVM/JDK is not Java 25 you will encounter an error when opening the project. This error is fixed by going to `File > Settings > Build, Execution, Deployment > Build Tools > Gradle > Gradle JVM` and changing the value to a valid Java 25 JVM. You will also need to set the Project SDK to Java 25. This can be done by going to `File > Project Structure > Project SDK`. Once both have been set open the Gradle tab in IDEA and click the refresh button to reload the project.
-5. Open your Run/Debug Configurations. Under the `Application` category there should now be options to run NeoForge projects, and under the `Gradle` category there should now be options to run Fabric projects. Select one of the client options and try to run it.
-6. Assuming you were able to run the game in step 5 your workspace should now be set up.
+## How to use
+Press "I" or change keybinding to open menu
 
-### Eclipse
-While it is possible to use this template in Eclipse it is not recommended. During the development of this template multiple critical bugs and quirks related to Eclipse were found at nearly every level of the required build tools. While we continue to work with these tools to report and resolve issues support for projects like these are not there yet. For now Eclipse is considered unsupported by this project. The development cycle for build tools is notoriously slow so there are no ETAs available.
+![main_screen](https://cdn.modrinth.com/data/cached_images/4a1f374388b78990e30b2d424fb0ce7e9c310a42.png)
 
-## Development Guide
-When using this template the majority of your mod should be developed in the `common` project. The `common` project is compiled against the vanilla game and is used to hold code that is shared between the different loader-specific versions of your mod. The `common` project has no knowledge or access to ModLoader specific code, apis, or concepts. Code that requires something from a specific loader must be done through the project that is specific to that loader, such as the `fabric` or `neoforge` projects.
+You can change active sounds and even add your own. (Place files with extensions .ogg, .mp3, .wav into the "config/disappeared/sounds" folder)
 
-Loader specific projects such as the `fabric` and `neoforge` project are used to load the `common` project into the game. These projects also define code that is specific to that loader. Loader specific projects can access all the code in the `common` project. It is important to remember that the `common` project can not access code from loader specific projects.
+![sounds screen](https://cdn.modrinth.com/data/cached_images/9e1181711b6481c545685f123f45dca66980b53f.png)
+<!--
+![sounds screen]
+(https://cdn.modrinth.com/data/cached_images/46eeadb76862e138ff6a0ebd98459bdaf8a2b73f.png)
+-->
+### Configurable
 
-## Removing Platforms and Loaders
-While this template has support for many modloaders, new loaders may appear in the future, and existing loaders may become less relevant.
+![config screen](https://cdn.modrinth.com/data/cached_images/737c7d3267d02004cb98246cd5fa6114b1ca85e7.png)
 
-Removing loader specific projects is as easy as deleting the folder, and removing the `include('projectname')` line from the `settings.gradle` file.
-For example if you wanted to remove support for `forge` you would follow the following steps:
 
-1. Delete the subproject folder. For example, delete `MultiLoader-Template/forge`.
-2. Remove the project from `settings.gradle`. For example, remove `include('forge')`. 
+---
+
+### Example (YouTube link): 
+[![Watch the video](https://img.youtube.com/vi/KxuMYeb4Wis/maxresdefault.jpg)](https://youtu.be/KxuMYeb4Wis)
