@@ -12,13 +12,13 @@ import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 public class SoundResourcesCache {
@@ -41,13 +41,20 @@ public class SoundResourcesCache {
 
         try(BufferedReader reader = Files.newBufferedReader(SOUND_CACHE_FILE)) {
             Set<SoundInstanceRecord> readedSet = gson.fromJson(reader, setType);
+
             ALL_SOUNDS = ConcurrentHashMap.newKeySet();
             if (readedSet != null)
+            {
+                readedSet.removeIf(record -> {
+                    if (DisappearedConstants.IDENTIFIER_PATTERN.matcher(record.path).find()) {
+                        return !Minecraft.getInstance().getResourceManager().getResource(Identifier.parse(record.path)).isPresent();
+                    } else return !Files.exists(Path.of(record.path));
+                });
                 ALL_SOUNDS.addAll(readedSet);
+            }
         }
 
         ALL_SOUNDS.addAll(collectedSounds);
-
     }
 
     public static void save() {
@@ -72,6 +79,7 @@ public class SoundResourcesCache {
                 throw new RuntimeException(e);
             }
             save();
+            watchDir();
         });
     }
 
@@ -88,7 +96,6 @@ public class SoundResourcesCache {
 
         for (Identifier soundLocation: disappearedResources.keySet()) {
             String soundPath = soundLocation.toString();
-            System.out.println(soundPath);
             if (EXTENSIONS.stream().anyMatch(soundPath::endsWith)) {
                 export.add(
                         new SoundInstanceRecord(
@@ -121,5 +128,56 @@ public class SoundResourcesCache {
             }
         }
         return export;
+    }
+
+    private static AtomicBoolean IS_WATCHING = new AtomicBoolean(false);
+    public static void watchDir() {
+        if (!IS_WATCHING.compareAndSet(false, true)) return;
+
+        List<WatchEvent.Kind<?>> kinds = List.of(
+                StandardWatchEventKinds.ENTRY_CREATE,
+                StandardWatchEventKinds.ENTRY_MODIFY,
+                StandardWatchEventKinds.ENTRY_DELETE
+        );
+
+        Thread thread = new Thread(() -> {
+            try (WatchService watchService = FileSystems.getDefault().newWatchService()) {
+                EXTERNAL_SOUNDS_DIR.register(watchService,
+                        StandardWatchEventKinds.ENTRY_CREATE,
+                        StandardWatchEventKinds.ENTRY_MODIFY,
+                        StandardWatchEventKinds.ENTRY_DELETE
+                );
+
+                while (true) {
+                    WatchKey key;
+                    try {
+                        key = watchService.take();
+                    } catch (InterruptedException e) {
+                        return;
+                    }
+                    boolean needToLoad = false;
+                    for (WatchEvent<?> event : key.pollEvents()) {
+                        if (kinds.contains(event.kind())) {
+                            needToLoad = true;
+                        }
+                    }
+
+                    if (needToLoad) {
+                        load();
+                    }
+
+                    boolean valid = key.reset();
+                    if (!valid) {
+                        break;
+                    }
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } finally {
+                IS_WATCHING.set(false);
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
     }
 }
